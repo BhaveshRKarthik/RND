@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="xv6-cpp/xv6-cpp.vcxproj" />
+  <Project Path="xv6-riscv/xv6-riscv.vcxproj" />
+</Solution>
