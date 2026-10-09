@@ -52,7 +52,7 @@ printint(long long xx, int base, int sign)
 static void
 printptr(uint64 x)
 {
-  int i;
+  uint i;
   consputc('0');
   consputc('x');
   for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
@@ -61,11 +61,12 @@ printptr(uint64 x)
 
 // Print to the console.
 int
-printk(char *fmt, ...)
+printk(const char *fmt, ...)
 {
   va_list ap;
-  int i, cx, c0, c1, c2;
-  char *s;
+  uint i;
+  int cx, c0, c1, c2;
+  const char *s;
 
   if (panicking == 0)
     acquire(&pr.lock);
@@ -112,7 +113,7 @@ printk(char *fmt, ...)
     } else if (c0 == 'c') {
       consputc(va_arg(ap, uint));
     } else if (c0 == 's') {
-      if ((s = va_arg(ap, char *)) == 0)
+      if ((s = va_arg(ap, const char *)) == 0)
         s = "(null)";
       for (; *s; s++)
         consputc(*s);
@@ -135,7 +136,7 @@ printk(char *fmt, ...)
 }
 
 void
-panic(char *s)
+panic(const char *s)
 {
   panicking = 1;
   printk("panic: ");

@@ -67,7 +67,7 @@ bzero(int dev, int bno)
 static uint
 balloc(uint dev)
 {
-  int b, bi, m;
+  uint b, bi, m;
   struct buf *bp;
 
   bp = 0;
@@ -200,7 +200,7 @@ static struct inode *iget(uint dev, uint inum);
 struct inode *
 ialloc(uint dev, short type)
 {
-  int inum;
+  uint inum;
   struct buf *bp;
   struct dinode *dip;
 
@@ -372,9 +372,9 @@ iunlockput(struct inode *ip)
 }
 
 void
-ireclaim(int dev)
+ireclaim(uint dev)
 {
-  for (int inum = 1; inum < sb.ninodes; inum++) {
+  for (uint inum = 1; inum < sb.ninodes; inum++) {
     struct inode *ip = 0;
     struct buf *bp = bread(dev, IBLOCK(inum, sb));
     struct dinode *dip = (struct dinode *)bp->data + inum % IPB;
@@ -449,7 +449,7 @@ bmap(struct inode *ip, uint bn)
 void
 itrunc(struct inode *ip)
 {
-  int i, j;
+  uint i, j;
   struct buf *bp;
   uint *a;
 
@@ -575,7 +575,7 @@ namecmp(const char *s, const char *t)
 // Look for a directory entry in a directory.
 // If found, set *poff to byte offset of entry.
 struct inode *
-dirlookup(struct inode *dp, char *name, uint *poff)
+dirlookup(struct inode *dp, const char *name, uint *poff)
 {
   uint off, inum;
   struct dirent de;
@@ -603,9 +603,9 @@ dirlookup(struct inode *dp, char *name, uint *poff)
 // Write a new directory entry (name, inum) into the directory dp.
 // Returns 0 on success, -1 on failure (e.g. out of disk blocks).
 int
-dirlink(struct inode *dp, char *name, uint inum)
+dirlink(struct inode *dp, const char *name, uint inum)
 {
-  int off;
+  uint off;
   struct dirent de;
   struct inode *ip;
 
@@ -645,10 +645,10 @@ dirlink(struct inode *dp, char *name, uint inum)
 //   skipelem("a", name) = "", setting name = "a"
 //   skipelem("", name) = skipelem("////", name) = 0
 //
-static char *
-skipelem(char *path, char *name)
+static const char *
+skipelem(const char *path, char *name)
 {
-  char *s;
+  const char *s;
   int len;
 
   while (*path == '/')
@@ -675,7 +675,7 @@ skipelem(char *path, char *name)
 // path element into name, which must have room for DIRSIZ bytes.
 // Must be called inside a transaction since it calls iput().
 static struct inode *
-namex(char *path, int nameiparent, char *name)
+namex(const char *path, int nameiparent, char *name)
 {
   struct inode *ip, *next;
 
@@ -710,14 +710,14 @@ namex(char *path, int nameiparent, char *name)
 }
 
 struct inode *
-namei(char *path)
+namei(const char *path)
 {
   char name[DIRSIZ];
   return namex(path, 0, name);
 }
 
 struct inode *
-nameiparent(char *path, char *name)
+nameiparent(const char *path, char *name)
 {
   return namex(path, 1, name);
 }

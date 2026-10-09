@@ -34,7 +34,7 @@
 // and to keep track in memory of logged block# before commit.
 struct logheader {
   int n;
-  int block[LOGBLOCKS];
+  uint block[LOGBLOCKS];
 };
 
 struct log {

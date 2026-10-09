@@ -12,7 +12,7 @@ uint ticks;
 extern char trampoline[], uservec[];
 
 // in kernelvec.S, calls kerneltrap().
-void kernelvec();
+extern "C" void kernelvec();
 
 extern int devintr();
 
@@ -34,7 +34,7 @@ trapinithart(void)
 // called from, and returns to, trampoline.S
 // return value is user satp for trampoline.S to switch to.
 //
-uint64
+extern "C" uint64
 usertrap(void)
 {
   int which_dev = 0;
@@ -133,7 +133,7 @@ prepare_return(void)
 
 // interrupts and exceptions from kernel code go here via kernelvec,
 // on whatever the current kernel stack is.
-void
+extern "C" void
 kerneltrap()
 {
   int which_dev = 0;

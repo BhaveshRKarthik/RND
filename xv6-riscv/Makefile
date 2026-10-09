@@ -56,13 +56,14 @@ QEMU = qemu-system-riscv64
 MIN_QEMU_VERSION = 7.2
 
 CC = $(TOOLPREFIX)gcc
+CXX = $(TOOLPREFIX)g++
 LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
 CFLAGS = -Wall -Werror -Wno-unknown-attributes -O -fno-omit-frame-pointer -ggdb -gdwarf-2
 CFLAGS += -march=rv64gc
-CFLAGS += -std=gnu99
+# CFLAGS += -std=gnu99
 CFLAGS += -MD
 CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding
@@ -83,6 +84,9 @@ endif
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]nopie'),)
 CFLAGS += -fno-pie -nopie
 endif
+
+CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions -fno-use-cxa-atexit -fno-threadsafe-statics -std=c++23
+CFLAGS += -std=gnu99
 
 LDFLAGS = -z max-page-size=4096
 

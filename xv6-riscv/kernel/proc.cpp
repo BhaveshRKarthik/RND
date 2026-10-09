@@ -35,7 +35,7 @@ proc_mapstacks(pagetable_t kpgtbl)
   struct proc *p;
 
   for (p = proc; p < &proc[NPROC]; p++) {
-    char *pa = kalloc();
+    char *pa = static_cast<char*>(kalloc());
     if (pa == 0)
       panic("kalloc");
     uint64 va = KSTACK((int)(p - proc));
@@ -523,8 +523,9 @@ forkret(void)
 
     // We can invoke kexec() now that file system is initialized.
     // Put the return value (argc) of kexec into a0.
-    p->trapframe->a0 = kexec("/init", (char *[]){"/init", 0});
-    if (p->trapframe->a0 == -1) {
+    const char *argv[] = {"/init", nullptr};
+    p->trapframe->a0 = kexec("/init", argv);
+    if (p->trapframe->a0 == static_cast<uint64>(-1)) {
       panic("exec");
     }
   }
@@ -632,13 +633,13 @@ killed(struct proc *p)
 // depending on usr_dst.
 // Returns 0 on success, -1 on error.
 int
-either_copyout(int user_dst, uint64 dst, void *src, uint64 len)
+either_copyout(int user_dst, uint64 dst, const void *src, uint64 len)
 {
   struct proc *p = myproc();
   if (user_dst) {
-    return copyout(p->pagetable, dst, src, len);
+    return copyout(p->pagetable, dst, static_cast<const char*>(src), len);
   } else {
-    memmove((char *)dst, src, len);
+    memmove(reinterpret_cast<char*>(dst), static_cast<const char*>(src), len);
     return 0;
   }
 }
@@ -651,9 +652,9 @@ either_copyin(void *dst, int user_src, uint64 src, uint64 len)
 {
   struct proc *p = myproc();
   if (user_src) {
-    return copyin(p->pagetable, dst, src, len);
+    return copyin(p->pagetable, static_cast<char*>(dst), src, len);
   } else {
-    memmove(dst, (char *)src, len);
+    memmove(dst, reinterpret_cast<const void*>(src), len);
     return 0;
   }
 }
@@ -664,18 +665,18 @@ either_copyin(void *dst, int user_src, uint64 src, uint64 len)
 void
 procdump(void)
 {
-  static char *states[] = {
+  static const char *states[] = {
     // clang-format off
-    [UNUSED]    "unused",
-    [USED]      "used",
-    [SLEEPING]  "sleep ",
-    [RUNNABLE]  "runble",
-    [RUNNING]   "run   ",
-    [ZOMBIE]    "zombie"
+    [UNUSED]   = "unused",
+    [USED]     = "used",
+    [SLEEPING] = "sleep ",
+    [RUNNABLE] = "runble",
+    [RUNNING]  = "run   ",
+    [ZOMBIE]   = "zombie"
     // clang-format on
   };
   struct proc *p;
-  char *state;
+  const char *state;
 
   printk("\n");
   for (p = proc; p < &proc[NPROC]; p++) {

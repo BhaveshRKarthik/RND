@@ -60,13 +60,13 @@ struct {
 // uses sleep() and UART interrupts.
 //
 int
-consolewrite(int user_src, uint64 src, int n)
+consolewrite(int user_src, uint64 src, uint n)
 {
   char buf[32]; // move batches from user space to uart.
-  int i = 0;
+  uint i = 0;
 
   while (i < n) {
-    int nn = sizeof(buf);
+    uint nn = sizeof(buf);
     if (nn > n - i)
       nn = n - i;
     if (either_copyin(buf, user_src, src + i, nn) == -1)
@@ -85,7 +85,7 @@ consolewrite(int user_src, uint64 src, int n)
 // or kernel address.
 //
 int
-consoleread(int user_dst, uint64 dst, int n)
+consoleread(int user_dst, uint64 dst, uint n)
 {
   uint target;
   int c;

@@ -24,7 +24,7 @@ void            consoleintr(int);
 void            consputc(int);
 
 // exec.c
-int             kexec(char*, char**);
+int             kexec(const char*, const char* const*);
 
 // file.c
 struct file*    filealloc(void);
@@ -37,8 +37,8 @@ int             filewrite(struct file*, uint64, int n);
 
 // fs.c
 void            fsinit(int);
-int             dirlink(struct inode*, char*, uint);
-struct inode*   dirlookup(struct inode*, char*, uint*);
+int             dirlink(struct inode*, const char*, uint);
+struct inode*   dirlookup(struct inode*, const char*, uint*);
 struct inode*   ialloc(uint, short);
 struct inode*   idup(struct inode*);
 void            iinit();
@@ -48,13 +48,13 @@ void            iunlock(struct inode*);
 void            iunlockput(struct inode*);
 void            iupdate(struct inode*);
 int             namecmp(const char*, const char*);
-struct inode*   namei(char*);
-struct inode*   nameiparent(char*, char*);
+struct inode*   namei(const char*);
+struct inode*   nameiparent(const char*, char*);
 int             readi(struct inode*, int, uint64, uint, uint);
 void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, int, uint64, uint, uint);
 void            itrunc(struct inode*);
-void            ireclaim(int);
+void            ireclaim(uint);
 
 // kalloc.c
 void*           kalloc(void);
@@ -74,8 +74,8 @@ int             piperead(struct pipe*, uint64, int);
 int             pipewrite(struct pipe*, uint64, int);
 
 // printk.c
-int             printk(char*, ...) __attribute__ ((format (printf, 1, 2)));
-void            panic(char*) __attribute__((noreturn));
+int             printk(const char*, ...) __attribute__ ((format (printf, 1, 2)));
+void            panic(const char*) __attribute__((noreturn));
 void            printkinit(void);
 
 // proc.c
@@ -99,17 +99,17 @@ void            userinit(void);
 int             kwait(uint64);
 void            wakeup(void*);
 void            yield(void);
-int             either_copyout(int user_dst, uint64 dst, void *src, uint64 len);
+int             either_copyout(int user_dst, uint64 dst, const void *src, uint64 len);
 int             either_copyin(void *dst, int user_src, uint64 src, uint64 len);
 void            procdump(void);
 
 // swtch.S
-void            swtch(struct context*, struct context*);
+extern "C" void            swtch(struct context*, struct context*);
 
 // spinlock.c
 void            acquire(struct spinlock*);
-int             holding(struct spinlock*);
-void            initlock(struct spinlock*, char*);
+int             holding(const struct spinlock*);
+void            initlock(struct spinlock*, const char*);
 void            release(struct spinlock*);
 void            push_off(void);
 void            pop_off(void);
@@ -117,8 +117,8 @@ void            pop_off(void);
 // sleeplock.c
 void            acquiresleep(struct sleeplock*);
 void            releasesleep(struct sleeplock*);
-int             holdingsleep(struct sleeplock*);
-void            initsleeplock(struct sleeplock*, char*);
+int             holdingsleep(const struct sleeplock*);
+void            initsleeplock(struct sleeplock*, const char*);
 
 // string.c
 int             memcmp(const void*, const void*, uint);
@@ -164,7 +164,7 @@ void            uvmunmap(pagetable_t, uint64, uint64, int);
 void            uvmclear(pagetable_t, uint64);
 pte_t *         walk(pagetable_t, uint64, int);
 uint64          walkaddr(pagetable_t, uint64);
-int             copyout(pagetable_t, uint64, char *, uint64);
+int             copyout(pagetable_t, uint64, const char *, uint64);
 int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
 int             ismapped(pagetable_t, uint64);

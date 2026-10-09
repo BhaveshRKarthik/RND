@@ -11,7 +11,7 @@ void timerinit();
 __attribute__((aligned(16))) char stack0[4096 * NCPU];
 
 // entry.S jumps here in machine mode on stack0.
-void
+extern "C" void
 start()
 {
   // set M Previous Privilege mode to Supervisor, for mret.
