@@ -139,29 +139,30 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="kernel\bio.c" />
-    <ClCompile Include="kernel\console.c" />
-    <ClCompile Include="kernel\exec.c" />
-    <ClCompile Include="kernel\file.c" />
-    <ClCompile Include="kernel\fs.c" />
-    <ClCompile Include="kernel\kalloc.c" />
-    <ClCompile Include="kernel\log.c" />
-    <ClCompile Include="kernel\main.c" />
-    <ClCompile Include="kernel\pipe.c" />
-    <ClCompile Include="kernel\plic.c" />
-    <ClCompile Include="kernel\printk.c" />
-    <ClCompile Include="kernel\proc.c" />
-    <ClCompile Include="kernel\sleeplock.c" />
-    <ClCompile Include="kernel\spinlock.c" />
-    <ClCompile Include="kernel\start.c" />
-    <ClCompile Include="kernel\string.c" />
-    <ClCompile Include="kernel\syscall.c" />
-    <ClCompile Include="kernel\sysfile.c" />
-    <ClCompile Include="kernel\sysproc.c" />
-    <ClCompile Include="kernel\trap.c" />
-    <ClCompile Include="kernel\uart.c" />
-    <ClCompile Include="kernel\virtio_disk.c" />
-    <ClCompile Include="kernel\vm.c" />
+    <ClCompile Include="kernel\bio.cpp" />
+    <ClCompile Include="kernel\console.cpp" />
+    <ClCompile Include="kernel\exec.cpp" />
+    <ClCompile Include="kernel\file.cpp" />
+    <ClCompile Include="kernel\fs.cpp" />
+    <ClCompile Include="kernel\kalloc.cpp" />
+    <ClCompile Include="kernel\log.cpp" />
+    <ClCompile Include="kernel\main.cpp" />
+    <ClCompile Include="kernel\pipe.cpp" />
+    <ClCompile Include="kernel\plic.cpp" />
+    <ClCompile Include="kernel\printk.cpp" />
+    <ClCompile Include="kernel\proc.cpp" />
+    <ClCompile Include="kernel\sleeplock.cpp" />
+    <ClCompile Include="kernel\spinlock.cpp" />
+    <ClCompile Include="kernel\start.cpp" />
+    <ClCompile Include="kernel\string.cpp" />
+    <ClCompile Include="kernel\syscall.cpp" />
+    <ClCompile Include="kernel\sysfile.cpp" />
+    <ClCompile Include="kernel\sysproc.cpp" />
+    <ClCompile Include="kernel\trap.cpp" />
+    <ClCompile Include="kernel\uart.cpp" />
+    <ClCompile Include="kernel\virtio_disk.cpp" />
+    <ClCompile Include="kernel\vm.cpp" />
+    <ClCompile Include="user\init.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kernel\buf.h" />
@@ -188,6 +189,7 @@
     <None Include="kernel\kernelvec.S" />
     <None Include="kernel\swtch.S" />
     <None Include="kernel\trampoline.S" />
+    <None Include="Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

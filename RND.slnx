@@ -3,6 +3,6 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="xv6-cpp/xv6-cpp.vcxproj" />
-  <Project Path="xv6-riscv/xv6-riscv.vcxproj" />
+  <Project Path="xv6-cpp/xv6-cpp.vcxproj" Id="b29b1876-5f5e-4438-9e65-65b46965ad04" />
+  <Project Path="xv6-riscv/xv6-riscv.vcxproj" Id="9f2993a8-63a6-4637-88b6-140fd4672c8d" />
 </Solution>

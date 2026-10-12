@@ -15,73 +15,76 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="kernel\bio.c">
+    <ClCompile Include="kernel\bio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\console.c">
+    <ClCompile Include="kernel\console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\exec.c">
+    <ClCompile Include="kernel\exec.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\file.c">
+    <ClCompile Include="kernel\file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\fs.c">
+    <ClCompile Include="kernel\fs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\kalloc.c">
+    <ClCompile Include="kernel\kalloc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\log.c">
+    <ClCompile Include="kernel\log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\main.c">
+    <ClCompile Include="kernel\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\pipe.c">
+    <ClCompile Include="kernel\pipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\plic.c">
+    <ClCompile Include="kernel\plic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\printk.c">
+    <ClCompile Include="kernel\printk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\proc.c">
+    <ClCompile Include="kernel\proc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\sleeplock.c">
+    <ClCompile Include="kernel\sleeplock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\spinlock.c">
+    <ClCompile Include="kernel\spinlock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\start.c">
+    <ClCompile Include="kernel\start.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\string.c">
+    <ClCompile Include="kernel\string.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\syscall.c">
+    <ClCompile Include="kernel\syscall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\sysfile.c">
+    <ClCompile Include="kernel\sysfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\sysproc.c">
+    <ClCompile Include="kernel\sysproc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\trap.c">
+    <ClCompile Include="kernel\trap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\uart.c">
+    <ClCompile Include="kernel\uart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\virtio_disk.c">
+    <ClCompile Include="kernel\virtio_disk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kernel\vm.c">
+    <ClCompile Include="kernel\vm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="user\init.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -154,5 +157,6 @@
     <None Include="kernel\trampoline.S">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="Makefile" />
   </ItemGroup>
 </Project>
