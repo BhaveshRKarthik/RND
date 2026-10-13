@@ -1,22 +1,28 @@
 #pragma once
 
-#include "context.h"
-#include "types.h"
 #include <array>
 
+#include "config.h"
+#include "context.h"
+#include "types.h"
 
 namespace xv6 {
-    constexpr size_t NCPU = 8; // maximum number of CPUs
-
-    struct cpu : private utils::immovable {
+    class cpu : private utils::immovable<cpu> {
     public:
         static void push_intr_off();
         static void pop_intr_off();
         static cpu& current();
 
-    private:
-        static std::array<cpu, NCPU> m_cpus;
+    public:
+        static uint8_t panicking, panicked;
 
+    private:
+        cpu() = default;
+
+    private:
+        static std::array<cpu, cpu_count> m_cpus;
+
+    private:
         void* m_proc      = nullptr;
         context m_context = {};
         uint32_t m_noff   = 0;

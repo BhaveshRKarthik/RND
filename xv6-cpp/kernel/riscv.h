@@ -2,33 +2,7 @@
 
 #ifndef __ASSEMBLER__
 
-#include "types.h"
-
-// Bitwise operators for a CSR's flag_type. Use inside the CSR's field struct, after the enum:
-//   XV6_RISCV_FLAG_TYPE_OPERATORS;
-// The trailing static_assert(true) exists so the caller's ';' closes a declaration instead of being a stray semicolon.
-#define XV6_RISCV_FLAG_TYPE_OPERATORS                                                                                                                          \
-    friend inline constexpr flag_type operator|(flag_type lhs, flag_type rhs) {                                                                                \
-        return static_cast<flag_type>(static_cast<uint64_t>(lhs) | static_cast<uint64_t>(rhs));                                                                \
-    }                                                                                                                                                          \
-    friend inline constexpr flag_type operator&(flag_type lhs, flag_type rhs) {                                                                                \
-        return static_cast<flag_type>(static_cast<uint64_t>(lhs) & static_cast<uint64_t>(rhs));                                                                \
-    }                                                                                                                                                          \
-    friend inline constexpr flag_type operator~(flag_type value) {                                                                                             \
-        return static_cast<flag_type>(~static_cast<uint64_t>(value));                                                                                          \
-    }                                                                                                                                                          \
-    friend inline constexpr flag_type operator^(flag_type lhs, flag_type rhs) {                                                                                \
-        return static_cast<flag_type>(static_cast<uint64_t>(lhs) ^ static_cast<uint64_t>(rhs));                                                                \
-    }                                                                                                                                                          \
-    friend inline constexpr flag_type& operator|=(flag_type& lhs, flag_type rhs) {                                                                             \
-        return lhs = lhs | rhs;                                                                                                                                \
-    }                                                                                                                                                          \
-    friend inline constexpr flag_type& operator&=(flag_type& lhs, flag_type rhs) {                                                                             \
-        return lhs = lhs & rhs;                                                                                                                                \
-    }                                                                                                                                                          \
-    friend inline constexpr flag_type& operator^=(flag_type& lhs, flag_type rhs) {                                                                             \
-        return lhs = lhs ^ rhs;                                                                                                                                \
-    }
+#include "flag_enum.h"
 
 namespace riscv {
 
@@ -44,18 +18,24 @@ namespace riscv {
         concept readable = valid<csr_addr>;
 
         // is csr_addr a writable CSR address?
-
+        // csr_addr[11:10] == 0b11 means they are not writable.
         template<uint16_t csr_addr>
         concept writable = valid<csr_addr> && (((csr_addr >> 10) & 0b11) != 0b11);
+
+        struct no_fields {
+            using flag_type = uint64_t;
+        };
+
+        template<typename Fields>
+        concept valid_fields_type = std::is_same_v<typename Fields::flag_type, uint64_t> ||
+                                    (std::is_same_v<std::underlying_type_t<typename Fields::flag_type>, uint64_t>); // is_enum_v subsumed indirectly
+
     } // namespace detail::csr
 
-    struct no_fields {
-        using flag_type = uint64_t;
-    };
 
     // CSR (Control and Status Register) wrapper. Provides read/write access to a CSR at compile-time constant address csr_addr.
-    template<uint16_t csr_addr, typename Fields = no_fields>
-    struct CSR : Fields, private utils::immovable {
+    template<uint16_t csr_addr, detail::csr::valid_fields_type Fields = detail::csr::no_fields>
+    struct CSR : Fields, private utils::immovable<CSR<csr_addr, Fields>> {
         static_assert(detail::csr::valid<csr_addr>, "CSR address must be less than 4096");
 
         using flag_type = Fields::flag_type;
@@ -104,10 +84,10 @@ namespace riscv {
         }
     };
 
-    /** ------------------------------------------------------------------
-    // Field definitions. Each struct shares its name with the CSR variable below,
-    // so enumerators are reachable as both  mstatus::mpp_s  and  mstatus.mpp_s.
-    // ------------------------------------------------------------------ **/
+    /** ------------------------------------------------------------------------------ //
+    // Field definitions. Each struct shares its name with the CSR variable below,     //
+    // so enumerators are reachable as both `mstatus::mpp_s` and `mstatus.mpp_s`.      //
+    // ------------------------------------------------------------------------------ **/
 
     // Machine Status Register
     struct mstatus {
@@ -121,7 +101,7 @@ namespace riscv {
             /// user mode
             mpp_u = 0ULL << 11,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Supervisor Status Register
@@ -134,7 +114,7 @@ namespace riscv {
             /// Supervisor Interrupt Enable
             sie = 1ULL << 1,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Supervisor Interrupt Pending
@@ -143,7 +123,7 @@ namespace riscv {
             /// supervisor software interrupt (xv6 clears this for timer ticks)
             ssip = 1ULL << 1,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Supervisor Interrupt Enable
@@ -156,7 +136,7 @@ namespace riscv {
             /// software
             ssie = 1ULL << 1,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Machine-mode Interrupt Enable
@@ -165,7 +145,7 @@ namespace riscv {
             /// supervisor timer
             stie = 1ULL << 5,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Machine Environment Configuration Register
@@ -176,7 +156,7 @@ namespace riscv {
             /// hardware A/D bit updates
             adue = 1ULL << 61,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Machine-mode Counter-Enable
@@ -189,7 +169,7 @@ namespace riscv {
             /// instret
             ir = 1ULL << 2,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Physical Memory Protection config (bits for entry 0 live in the low byte of pmpcfg0)
@@ -212,7 +192,7 @@ namespace riscv {
             /// naturally aligned power-of-two region
             a_napot = 3ULL << 3,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Supervisor address translation and protection
@@ -225,7 +205,7 @@ namespace riscv {
             /// 39-bit virtual addressing with 3-level page table
             mode_sv39 = 8ULL << 60,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Supervisor Trap Cause
@@ -234,11 +214,11 @@ namespace riscv {
             /// set for interrupts, clear for exceptions
             interrupt = 1ULL << 63,
         };
-        XV6_RISCV_FLAG_TYPE_OPERATORS;
+        XV6_FLAG_ENUM_OPERATORS_CLASS(flag_type);
     };
 
     // Thread Pointer (tp) register
-    struct tp_t : private utils::immovable {
+    struct tp_t : private utils::immovable<tp_t> {
         constexpr tp_t() = default;
         operator uint64_t() const {
             uint64_t x;
@@ -250,61 +230,62 @@ namespace riscv {
         }
     };
 
-    // ------------------------------------------------------------------
-    // CSR instances
-    // ------------------------------------------------------------------
+    /** ----------------------------------------------------------------------------- //
+    // CSR instances - These objects get optimized away by the compiler but give      //
+    //                 us good syntax for reading/writing to the registers            //
+    // ----------------------------------------------------------------------------- **/
 
     /* Machine-level */
 
     // Machine Status
-    inline constexpr CSR<0x300, struct mstatus> mstatus = {};
+    constexpr CSR<0x300, struct mstatus> mstatus = {};
     // Machine Exception Delegation
-    inline constexpr CSR<0x302> medeleg = {};
+    constexpr CSR<0x302> medeleg = {};
     // Machine Interrupt Delegation
-    inline constexpr CSR<0x303> mideleg = {};
+    constexpr CSR<0x303> mideleg = {};
     // Machine Interrupt Enable
-    inline constexpr CSR<0x304, struct mie> mie = {};
+    constexpr CSR<0x304, struct mie> mie = {};
     // Machine Counter-Enable
-    inline constexpr CSR<0x306, struct mcounteren> mcounteren = {};
+    constexpr CSR<0x306, struct mcounteren> mcounteren = {};
     // Machine Environment Config
-    inline constexpr CSR<0x30A, struct menvcfg> menvcfg = {};
+    constexpr CSR<0x30A, struct menvcfg> menvcfg = {};
     // Machine Exception PC
-    inline constexpr CSR<0x341> mepc = {};
+    constexpr CSR<0x341> mepc = {};
     // PMP config 0
-    inline constexpr CSR<0x3A0, struct pmpcfg0> pmpcfg0 = {};
+    constexpr CSR<0x3A0, struct pmpcfg0> pmpcfg0 = {};
     // PMP address 0
-    inline constexpr CSR<0x3B0> pmpaddr0 = {};
+    constexpr CSR<0x3B0> pmpaddr0 = {};
     // Hart ID (read-only)
-    inline constexpr CSR<0xF14> mhartid = {};
+    constexpr CSR<0xF14> mhartid = {};
 
     /* Supervisor-level */
 
     // Supervisor Status
-    inline constexpr CSR<0x100, struct sstatus> sstatus = {};
+    constexpr CSR<0x100, struct sstatus> sstatus = {};
     // Supervisor Interrupt Enable
-    inline constexpr CSR<0x104, struct sie> sie = {};
+    constexpr CSR<0x104, struct sie> sie = {};
     // Supervisor Trap-Vector Base (low 2 bits = mode)
-    inline constexpr CSR<0x105> stvec = {};
+    constexpr CSR<0x105> stvec = {};
     // Supervisor Exception PC
-    inline constexpr CSR<0x141> sepc = {};
+    constexpr CSR<0x141> sepc = {};
     // Supervisor Trap Cause
-    inline constexpr CSR<0x142, struct scause> scause = {};
+    constexpr CSR<0x142, struct scause> scause = {};
     // Supervisor Trap Value
-    inline constexpr CSR<0x143> stval = {};
+    constexpr CSR<0x143> stval = {};
     // Supervisor Interrupt Pending
-    inline constexpr CSR<0x144, struct sip> sip = {};
+    constexpr CSR<0x144, struct sip> sip = {};
     // Supervisor Timer Compare (Sstc)
-    inline constexpr CSR<0x14D> stimecmp = {};
+    constexpr CSR<0x14D> stimecmp = {};
     // Address translation and protection
-    inline constexpr CSR<0x180, struct satp> satp = {};
+    constexpr CSR<0x180, struct satp> satp = {};
 
     /* User-level (read-only shadows) */
 
     // Timer (read-only)
-    inline constexpr CSR<0xC01> time = {};
+    constexpr CSR<0xC01> time = {};
 
     // Thread Pointer (tp) register
-    inline constexpr tp_t tp = {};
+    constexpr tp_t tp = {};
 
     // equivalent of the old MAKE_SATP(pagetable): Sv39 mode + physical page number
     constexpr satp::flag_type make_satp(uint64_t pagetable_addr) {

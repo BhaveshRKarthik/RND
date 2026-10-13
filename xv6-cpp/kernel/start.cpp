@@ -1,5 +1,5 @@
 #include "cpu.h"
-#include "entry.h"
+#include "config.h"
 #include "riscv.h"
 #include "types.h"
 
@@ -9,7 +9,7 @@ namespace xv6 {
 
     extern "C" {
     // alignas 16 required for ABI. can make stricter (say to kernel_stack_size/4096/etc)
-    alignas(16) char kernel_stack_base[kernel_stack_size * NCPU];
+    alignas(16) char kernel_stack_base[kernel_stack_size * cpu_count];
     }
 
     // ask each hart to generate timer interrupts.

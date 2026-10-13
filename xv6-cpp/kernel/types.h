@@ -4,10 +4,15 @@
 #include <stdint.h>
 #include <utility>
 
-#define MACRO_CONCAT_IMPL(x, y) x##y
-#define CONCAT(x, y) MACRO_CONCAT_IMPL(x, y)
+#ifdef _MSC_VER
+#define no_unique_address msvc::no_unique_address
+#endif
+
+#define XV6_UTILS_MACRO_CONCAT_IMPL(x, y) x##y
+#define XV6_UTILS_CONCAT(x, y) XV6_UTILS_MACRO_CONCAT_IMPL(x, y)
 
 namespace utils {
+    template<typename T>
     struct immovable {
         constexpr immovable()                  = default;
         immovable(const immovable&)            = delete;
@@ -19,8 +24,8 @@ namespace utils {
     // no exceptions = simpler code
     template<typename Func>
     struct defer_guard_impl {
-        defer_guard_impl(Func&& f) : m_func(std::forward<Func>(f)) {}
-        ~defer_guard_impl() { m_func(); }
+        constexpr defer_guard_impl(Func&& f) : m_func(std::forward<Func>(f)) {}
+        constexpr ~defer_guard_impl() { m_func(); }
 
     private:
         Func m_func;
@@ -28,4 +33,4 @@ namespace utils {
 
 } // namespace utils
 
-#define defer ::utils::defer_guard_impl CONCAT(_defer_guard_, __COUNTER__) = [&]()
+#define defer ::utils::defer_guard_impl XV6_UTILS_CONCAT(_defer_guard_, __COUNTER__) = [&]()

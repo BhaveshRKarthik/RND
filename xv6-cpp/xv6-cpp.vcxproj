@@ -141,15 +141,26 @@
   <ItemGroup>
     <None Include="kernel\entry.S" />
     <None Include="kernel\kernel.ld" />
+    <None Include="kernel\swtch.S" />
+    <None Include="kernel\trampoline.S" />
+    <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="kernel\cpu.cpp" />
+    <ClCompile Include="kernel\kmain.cpp" />
     <ClCompile Include="kernel\spinlock.cpp" />
     <ClCompile Include="kernel\start.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="kernel\context.h" />
+    <ClInclude Include="kernel\cpu.h" />
+    <ClInclude Include="kernel\config.h" />
+    <ClInclude Include="kernel\flag_enum.h" />
+    <ClInclude Include="kernel\proc.h" />
     <ClInclude Include="kernel\riscv.h" />
     <ClInclude Include="kernel\spinlock.h" />
     <ClInclude Include="kernel\types.h" />
+    <ClInclude Include="kernel\uart.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

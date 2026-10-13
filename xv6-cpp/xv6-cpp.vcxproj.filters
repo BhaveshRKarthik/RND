@@ -18,15 +18,26 @@
     <None Include="kernel\entry.S">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="kernel\kernel.ld">
+    <None Include="kernel\swtch.S">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="kernel\trampoline.S">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="kernel\kernel.ld" />
+    <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kernel\start.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="kernel\spinlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="kernel\cpu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="kernel\kmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,6 +49,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="kernel\spinlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel\context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel\cpu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel\uart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel\flag_enum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel\proc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

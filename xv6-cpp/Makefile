@@ -7,7 +7,9 @@ OBJS = \
   $K/swtch.o \
   $K/trampoline.o \
   $K/cpu.o \
-  $K/spinlock.o
+  $K/spinlock.o \
+  $K/kmain.o \
+  $K/kernelvec.o \
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
 # perhaps in /opt/riscv/bin
@@ -40,36 +42,36 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
-CFLAGS = -Wall -Werror -Wno-unknown-attributes -O -fno-omit-frame-pointer -ggdb -gdwarf-2
-CFLAGS += -march=rv64gc
+override COM_FLAGS += -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wno-unknown-attributes -Wold-style-cast -O -fno-omit-frame-pointer -ggdb -gdwarf-2
+override COM_FLAGS += -march=rv64gc
 # CFLAGS += -std=gnu99
-CFLAGS += -MD
-CFLAGS += -mcmodel=medany
-CFLAGS += -ffreestanding
-CFLAGS += -fno-common -nostdlib
-CFLAGS += -fno-builtin-strncpy -fno-builtin-strncmp -fno-builtin-strlen -fno-builtin-memset
-CFLAGS += -fno-builtin-memmove -fno-builtin-memcmp -fno-builtin-log -fno-builtin-bzero
-CFLAGS += -fno-builtin-strchr -fno-builtin-exit -fno-builtin-malloc -fno-builtin-putc
-CFLAGS += -fno-builtin-free
-CFLAGS += -fno-builtin-memcpy -Wno-main
-CFLAGS += -fno-builtin-printf -fno-builtin-fprintf -fno-builtin-vprintf
-CFLAGS += -I. -isystem $(CURDIR)/std
-CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
+override COM_FLAGS += -MD
+override COM_FLAGS += -mcmodel=medany
+override COM_FLAGS += -ffreestanding
+override COM_FLAGS += -fno-common -nostdlib
+override COM_FLAGS += -fno-builtin-strncpy -fno-builtin-strncmp -fno-builtin-strlen -fno-builtin-memset
+override COM_FLAGS += -fno-builtin-memmove -fno-builtin-memcmp -fno-builtin-log -fno-builtin-bzero
+override COM_FLAGS += -fno-builtin-strchr -fno-builtin-exit -fno-builtin-malloc -fno-builtin-putc
+override COM_FLAGS += -fno-builtin-free
+override COM_FLAGS += -fno-builtin-memcpy -Wno-main
+override COM_FLAGS += -fno-builtin-printf -fno-builtin-fprintf -fno-builtin-vprintf
+override COM_FLAGS += -I. -isystem $(CURDIR)/std
+override COM_FLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 
 # Disable PIE when possible (for Ubuntu 16.10 toolchain)
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
-CFLAGS += -fno-pie -no-pie
+COM_FLAGS += -fno-pie -no-pie
 endif
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]nopie'),)
-CFLAGS += -fno-pie -nopie
+COM_FLAGS += -fno-pie -nopie
 endif
 
-CXXFLAGS := $(CFLAGS)
-CXXFLAGS += -fno-rtti -fno-exceptions -fno-use-cxa-atexit -fno-threadsafe-statics
-CXXFLAGS += -std=c++23
-CFLAGS += -std=gnu99
+override CXXFLAGS += $(COM_FLAGS) -std=c++23 
+override CXXFLAGS += -fno-rtti -fno-exceptions -fno-use-cxa-atexit -fno-threadsafe-statics
 
-LDFLAGS = -z max-page-size=4096
+override CFLAGS += $(COM_FLAGS) -std=gnu99
+
+override LDFLAGS := -z max-page-size=4096
 
 $K/kernel: $(OBJS) $K/kernel.ld
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o $K/kernel $(OBJS) 

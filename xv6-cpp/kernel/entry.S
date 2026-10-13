@@ -5,7 +5,7 @@
 .section .text
 .global _entry
 
-#include "entry.h"
+#include "config.h"
 
 _entry:
         # set up a stack for C++.

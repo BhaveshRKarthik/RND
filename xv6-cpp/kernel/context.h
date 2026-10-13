@@ -41,8 +41,8 @@ namespace xv6 {
     static_assert(sizeof(context) == 14 * 8, "context size has changed. verify swtch.S before updating this static_assert. "
                                              "If floating point registers have been added, add static asserts for their offsets as well.");
 
-#define XV6_ASSERT_CONTEXT_OFFSET(member, expected_offset) \
-    static_assert(offsetof(context, member) == expected_offset, "context::"#member" offset has changed. verify swtch.S before updating this static_assert.")
+#define XV6_ASSERT_CONTEXT_OFFSET(member, expected_offset)                                                                                                     \
+    static_assert(offsetof(context, member) == expected_offset, "context::" #member " offset has changed. verify swtch.S before updating this static_assert.")
 
     XV6_ASSERT_CONTEXT_OFFSET(ra, 0);
     XV6_ASSERT_CONTEXT_OFFSET(sp, 8);
