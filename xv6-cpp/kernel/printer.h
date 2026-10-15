@@ -408,4 +408,9 @@ namespace xv6::detail::print {
         builtin::format_spec m_spec;
     };
 
+    template<>
+    class printer<std::nullptr_t> : public printer<const void*> {
+    public:
+        void print(const std::nullptr_t&, const print_context& ctx) const { printer<const void*>::print(nullptr, ctx); }
+    };
 } // namespace xv6::detail::print

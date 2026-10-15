@@ -4,7 +4,7 @@
 namespace xv6 {
     [[noreturn]] void panic(const char*);
 
-    std::array<cpu, NCPU> cpu::m_cpus = {};
+    std::array<cpu, cpu_count> cpu::m_cpus = {};
 
     cpu& cpu::current() {
         // The m_cpus array is indexed by riscv::tp, which is guaranteed to be unique for each CPU.

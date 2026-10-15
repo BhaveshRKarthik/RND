@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="kernel\cpu.cpp" />
     <ClCompile Include="kernel\kmain.cpp" />
+    <ClCompile Include="kernel\printer.h" />
     <ClCompile Include="kernel\spinlock.cpp" />
     <ClCompile Include="kernel\start.cpp" />
   </ItemGroup>

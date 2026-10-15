@@ -223,11 +223,6 @@ namespace xv6 {
             using parser = format_parser<F.size(), F, NumArgs>;
         };
 
-        template<fixed_string S>
-        consteval auto operator""_fmt() {
-            return format_string<S>{};
-        }
-
         // String literals arrive as arrays (char[N]); they are printed through printer<const char*>.
         template<typename T>
         using printer_key_t = std::conditional_t<std::is_array_v<T>, const std::remove_extent_t<T>*, T>;
@@ -288,13 +283,16 @@ namespace xv6 {
     // `_fmt` is visible inside namespace xv6, and elsewhere through `using namespace xv6::literals;`
     inline namespace literals {
         inline namespace print_literals {
-            using detail::print::operator""_fmt;
+            template<detail::print::fixed_string S>
+            consteval auto operator""_fmt() {
+                return detail::print::format_string<S>{};
+            }
         }
     } // namespace literals
 
     template<uintptr_t uart_base_addr, std::derived_from<detail::print::format_string_tag> Fmt, typename... Args>
     void kprint(ns16550a::UART<uart_base_addr>& uart, Fmt fmt, const Args&... args) {
-        const detail::print::print_context ctx(detail::print::console_write<UART0_BASE>, &uart);
+        const detail::print::print_context ctx(detail::print::console_write<uart_base_addr>, &uart);
         detail::print::format_to(ctx, fmt, args...);
     }
 
@@ -305,7 +303,7 @@ namespace xv6 {
 
     template<uintptr_t uart_base_addr, std::derived_from<detail::print::format_string_tag> Fmt, typename... Args>
     void kprint_sync(ns16550a::UART<uart_base_addr>& uart, Fmt fmt, const Args&... args) {
-        const detail::print::print_context ctx(detail::print::console_write_sync<UART0_BASE>, &uart);
+        const detail::print::print_context ctx(detail::print::console_write_sync<uart_base_addr>, &uart);
         detail::print::format_to(ctx, fmt, args...);
     }
 
