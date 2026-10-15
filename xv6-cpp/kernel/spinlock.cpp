@@ -2,12 +2,6 @@
 #include "cpu.h"
 #include "riscv.h"
 
-#ifdef __INTELLISENSE__
-#define __atomic_exchange_n(...) 1
-#define __atomic_load_n(...) 1
-#define __atomic_store_n(...) 1
-#endif
-
 namespace xv6 {
     [[noreturn]] void panic(const char*); // TODO: take this from its own header once printf/console is rewritten
 
@@ -22,7 +16,7 @@ namespace xv6 {
             while (__atomic_load_n(&m_locked, __ATOMIC_RELAXED) != lock_status::unlocked);
         }
         // Atomic (relaxed) only so that a concurrent holding() on another hart is not a data race.
-        __atomic_store_n(&m_holder, riscv::tp, __ATOMIC_RELAXED);
+        __atomic_store_n(&m_holder, static_cast<uint32_t>(riscv::tp), __ATOMIC_RELAXED);
     }
 
     void spinlock::release() {

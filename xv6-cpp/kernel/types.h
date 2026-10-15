@@ -4,8 +4,13 @@
 #include <stdint.h>
 #include <utility>
 
-#ifdef _MSC_VER
+// if user is using visual studio as ide, make intellisense happier
+#if defined(_MSC_VER) && defined(__INTELLISENSE__)
 #define no_unique_address msvc::no_unique_address
+#define __atomic_exchange_n(...) 1
+#define __atomic_load_n(...) 1
+#define __atomic_store_n(...) ((void)1)
+#define __attribute__(...)
 #endif
 
 #define XV6_UTILS_MACRO_CONCAT_IMPL(x, y) x##y

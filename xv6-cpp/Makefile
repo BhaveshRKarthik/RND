@@ -42,18 +42,13 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
-override COM_FLAGS += -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wno-unknown-attributes -Wold-style-cast -O -fno-omit-frame-pointer -ggdb -gdwarf-2
-override COM_FLAGS += -march=rv64gc
-# CFLAGS += -std=gnu99
-override COM_FLAGS += -MD
-override COM_FLAGS += -mcmodel=medany
-override COM_FLAGS += -ffreestanding
+override COM_FLAGS += -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wno-unknown-attributes -Wold-style-cast -Werror -O -fno-omit-frame-pointer
+override COM_FLAGS += -ggdb -gdwarf-2 -march=rv64gc -MD -mcmodel=medany -ffreestanding
 override COM_FLAGS += -fno-common -nostdlib
 override COM_FLAGS += -fno-builtin-strncpy -fno-builtin-strncmp -fno-builtin-strlen -fno-builtin-memset
 override COM_FLAGS += -fno-builtin-memmove -fno-builtin-memcmp -fno-builtin-log -fno-builtin-bzero
 override COM_FLAGS += -fno-builtin-strchr -fno-builtin-exit -fno-builtin-malloc -fno-builtin-putc
-override COM_FLAGS += -fno-builtin-free
-override COM_FLAGS += -fno-builtin-memcpy -Wno-main
+override COM_FLAGS += -fno-builtin-free -fno-builtin-memcpy -Wno-main
 override COM_FLAGS += -fno-builtin-printf -fno-builtin-fprintf -fno-builtin-vprintf
 override COM_FLAGS += -I. -isystem $(CURDIR)/std
 override COM_FLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)

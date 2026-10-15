@@ -10,6 +10,7 @@
 
 void sleep(void* chan, xv6::spinlock&);
 void wakeup(void* chan);
+void consoleintr(int c);
 
 namespace ns16550a {
 

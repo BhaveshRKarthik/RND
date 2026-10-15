@@ -26,6 +26,9 @@
     </None>
     <None Include="kernel\kernel.ld" />
     <None Include="Makefile" />
+    <None Include="kernel\kernelvec.S">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kernel\start.cpp">
@@ -66,7 +69,7 @@
     <ClInclude Include="kernel\flag_enum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="kernel\proc.h">
+    <ClInclude Include="kernel\print.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

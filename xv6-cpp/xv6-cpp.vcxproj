@@ -141,6 +141,7 @@
   <ItemGroup>
     <None Include="kernel\entry.S" />
     <None Include="kernel\kernel.ld" />
+    <None Include="kernel\kernelvec.S" />
     <None Include="kernel\swtch.S" />
     <None Include="kernel\trampoline.S" />
     <None Include="Makefile" />
@@ -156,7 +157,7 @@
     <ClInclude Include="kernel\cpu.h" />
     <ClInclude Include="kernel\config.h" />
     <ClInclude Include="kernel\flag_enum.h" />
-    <ClInclude Include="kernel\proc.h" />
+    <ClInclude Include="kernel\print.h" />
     <ClInclude Include="kernel\riscv.h" />
     <ClInclude Include="kernel\spinlock.h" />
     <ClInclude Include="kernel\types.h" />
