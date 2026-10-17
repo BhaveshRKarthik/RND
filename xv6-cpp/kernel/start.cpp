@@ -12,18 +12,6 @@ namespace xv6 {
     alignas(16) char kernel_stack_base[kernel_stack_size * cpu_count];
     }
 
-    // ask each hart to generate timer interrupts.
-    static void timerinit() {
-        // enable the sstc extension (i.e. stimecmp).
-        riscv::menvcfg |= riscv::menvcfg::stce;
-
-        // allow supervisor to use stimecmp and time.
-        riscv::mcounteren |= riscv::mcounteren::tm;
-
-        // ask for the very first timer interrupt.
-        riscv::stimecmp = riscv::time + 1000000;
-    }
-
     extern "C" void start() {
         // set M Previous Privilege mode to Supervisor, for mret.
         riscv::mstatus &= ~riscv::mstatus::mpp_mask;
@@ -49,8 +37,12 @@ namespace xv6 {
         // enable hardware updates of page table A and D bits
         riscv::menvcfg |= riscv::menvcfg::adue;
 
-        // ask for clock interrupts.
-        timerinit();
+        
+        // ask each hart to generate timer interrupts but dont ask for the first one
+        // enable the sstc extension (i.e. stimecmp).
+        riscv::menvcfg |= riscv::menvcfg::stce;
+        // allow supervisor to use stimecmp and time.
+        riscv::mcounteren |= riscv::mcounteren::tm;
 
         // keep each CPU's hartid in its tp register, for cpuid().
         riscv::tp = riscv::mhartid;

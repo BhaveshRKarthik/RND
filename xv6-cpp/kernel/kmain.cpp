@@ -4,6 +4,8 @@
 
 #include "print.h" // activates the printing mechanism: format_parser, printers, kprint, kprint_sync
 
+#include <algorithm>
+
 using namespace xv6::print_literals; // operator""_fmt
 
 // print test. Run on ONE hart (other harts are parked):
@@ -106,7 +108,7 @@ void sleep(void*, xv6::spinlock& lk) {
     while (wake_seq == seq) {
         if (riscv::time > deadline) xv6::panic("sleep() timed out: no wakeup, the UART TX interrupt never arrived");
     }
-    lk.acquire();
+    lk.lock();
 }
 
 void wakeup(void*) {
@@ -135,30 +137,34 @@ extern "C" void kerneltrap() {
         if (irq != 0) *plic_reg(0x201004) = irq; // complete
         return;
     }
-    if (is_interrupt && code == 5) { // supervisor timer: silence it and carry on
-        riscv::stimecmp = ~0ULL;
-        return;
-    }
-
-    xv6::kprint_sync("TRAP scause={} sepc={} stval={}\n"_fmt, cause, +riscv::sepc, +riscv::stval);
-    finish(false);
+    if (riscv::tp == 0)
+        xv6::kprint_sync("TRAP scause={} sepc={} stval={}\n"_fmt, cause, +riscv::sepc, +riscv::stval);
+    else
+        while (true);
+    finish(true);
 }
 
+
 namespace xv6 {
+    static std::atomic_flag init_array_complete{};
+
     void kmain() {
         const uint64_t hart = riscv::tp;
-        if (hart == 0) run_init_array();
-
-        riscv::stvec    = reinterpret_cast<uint64_t>(&kernelvec);
-        riscv::stimecmp = ~0ULL; // no timer interrupts during the test
-        riscv::sie |= riscv::sie::seie;
-        plic_init_hart0();
-        riscv::intr_enable();
-
         if (hart == 0) {
-            xv6::kprint("Hello World! {:>10} abcd\n"_fmt, true);
-            xv6::kprint("Hello World! {:>10} abcd\n"_fmt, false);
-            finish(true);
+            run_init_array();
+            plic_init_hart0();
+            init_array_complete.test_and_set(std::memory_order_release);
         }
+        while (!init_array_complete.test(std::memory_order_acquire)) {
+            while (!init_array_complete.test(std::memory_order_relaxed));
+        }
+
+        riscv::stvec = reinterpret_cast<uint64_t>(&kernelvec);
+        riscv::intr_enable();
+        riscv::stimecmp = riscv::time + 1'000'000;
+
+        // os code
+
+        while (true);
     }
 } // namespace xv6

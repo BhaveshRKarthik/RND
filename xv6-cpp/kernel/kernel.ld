@@ -2,9 +2,10 @@ OUTPUT_ARCH( "riscv" )
 ENTRY( _entry )
 
 PHDRS {
-    text   PT_LOAD FLAGS(5);   /* R+X */
-    rodata PT_LOAD FLAGS(4);   /* R   */
-    data   PT_LOAD FLAGS(6);   /* R+W */
+    text       PT_LOAD FLAGS(5);   /* R+X */
+    init_array PT_LOAD FLAGS(6); /* R+W */ 
+    rodata     PT_LOAD FLAGS(4);   /* R   */
+    data       PT_LOAD FLAGS(6);   /* R+W */
 }
 
 SECTIONS
@@ -31,7 +32,7 @@ SECTIONS
     KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*)));
     KEEP(*(.init_array));
     __init_array_end = .;
-  } : text
+  } : init_array
 
   .rodata : {
     . = ALIGN(16);

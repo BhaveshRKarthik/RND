@@ -13,7 +13,7 @@
 // MAXVA is actually one bit less than the max allowed by
 // Sv39, to avoid having to sign-extend virtual addresses
 // that have the high bit set.
-#define MAX_VIRTUAL_ADDRESS (1L << (9 + 9 + 9 + 12 - 1))
+#define MAXIMUM_VIRTUAL_ADDRESS (1L << (9 + 9 + 9 + 12 - 1))
 
 // qemu -machine virt is set up like this,
 // based on qemu's hw/riscv/virt.c:
@@ -64,7 +64,7 @@
 
 // map kernel stacks beneath the trampoline,
 // each surrounded by invalid guard pages.
-#define KSTACK(p) (TRAMPOLINE - ((p) + 1) * 2 * PGSIZE)
+#define KSTACK(p) (TRAMPOLINE - ((p) + 1) * 2 * PAGE_SIZE)
 
 // User memory layout.
 // Address zero first:
@@ -75,7 +75,7 @@
 //   ...
 //   TRAPFRAME (p->trapframe, used by the trampoline)
 //   TRAMPOLINE (the same page as in the kernel)
-#define TRAPFRAME (TRAMPOLINE - PGSIZE)
+#define TRAPFRAME (TRAMPOLINE - PAGE_SIZE)
 
 #ifndef __ASSEMBLER__
 

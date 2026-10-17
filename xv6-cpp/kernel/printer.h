@@ -18,7 +18,7 @@ namespace xv6::detail::print {
     private:
         template<size_t... Idx>
         consteval fixed_string(const char (&str)[N], std::index_sequence<Idx...>) : str{ str[Idx]... } {
-            if (str[N - 1]) *static_cast<char*>(nullptr) = 0;
+            if (str[N - 1]) *const_cast<char*>("fixed_string is not null terminated") = 0;
         }
 
     public:
@@ -335,7 +335,7 @@ namespace xv6::detail::print {
 
         void print(const char* const& str, const print_context& ctx) const {
             if (str == nullptr) {
-                builtin::print_string(ctx, m_spec, std::string_view("(null)", 6));
+                builtin::print_string(ctx, m_spec, "(null)"sv);
                 return;
             }
             // counted by hand: std::string_view's constructor would call strlen, which the kernel does not have
@@ -359,7 +359,6 @@ namespace xv6::detail::print {
         builtin::format_spec m_spec;
     };
 
-    // every other integer type; char and bool above are full specializations, so they win over this one
     template<std::integral T>
     class printer<T> {
         static_assert(sizeof(T) <= sizeof(uint64_t), "integers wider than 64 bits are not supported");

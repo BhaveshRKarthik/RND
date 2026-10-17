@@ -7,9 +7,6 @@
 // if user is using visual studio as ide, make intellisense happier
 #if defined(_MSC_VER) && defined(__INTELLISENSE__)
 #define no_unique_address msvc::no_unique_address
-#define __atomic_exchange_n(...) 1
-#define __atomic_load_n(...) 1
-#define __atomic_store_n(...) ((void)1)
 #define __attribute__(...)
 #endif
 
@@ -35,7 +32,18 @@ namespace utils {
     private:
         Func m_func;
     };
-
+    
+    template<typename Lock>
+    class lock_guard {
+        lock_guard(Lock& lock) : m_lock(lock) { m_lock.lock(); }
+        ~lock_guard() { m_lock.unlock(); }
+    private:
+        Lock& m_lock;
+    };
 } // namespace utils
 
 #define defer ::utils::defer_guard_impl XV6_UTILS_CONCAT(_defer_guard_, __COUNTER__) = [&]()
+
+#define with_lock(lock)                                                                                                                                    \
+    if (::xv6::lock_guard XV6_UTILS_CONCAT(_xv6_spinlock_guard_, __COUNTER__){ lock }; false) {                                                            \
+    } else

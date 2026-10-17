@@ -5,32 +5,33 @@
 namespace xv6 {
     [[noreturn]] void panic(const char*); // TODO: take this from its own header once printf/console is rewritten
 
-    void spinlock::acquire() {
+    void spinlock::lock() {
         cpu::push_intr_off(); // disable interrupts to avoid deadlock with an interrupt handler taking this lock
-        if (holding()) panic("spinlock::acquire::already_held");
+        if (holding()) panic("spinlock::lock::already_held");
 
-        // On RISC-V the exchange is an amoswap.w.aq: the acquire ordering keeps the critical
+        // On RISC-V the exchange is an amoor.w.aq: the acquire ordering keeps the critical
         // section's loads and stores from moving above it. While the lock is taken we spin on a
         // plain load (test-and-test-and-set) so waiting harts do not hammer the bus with AMOs.
-        while (__atomic_exchange_n(&m_locked, lock_status::locked, __ATOMIC_ACQUIRE) != lock_status::unlocked) {
-            while (__atomic_load_n(&m_locked, __ATOMIC_RELAXED) != lock_status::unlocked);
+        while (m_locked.test_and_set(std::memory_order_acquire)) {
+            while (m_locked.test(std::memory_order_relaxed));
         }
+
         // Atomic (relaxed) only so that a concurrent holding() on another hart is not a data race.
-        __atomic_store_n(&m_holder, static_cast<uint32_t>(riscv::tp), __ATOMIC_RELAXED);
+        m_holder.store(static_cast<uint32_t>(riscv::tp), std::memory_order_relaxed);
     }
 
     void spinlock::release() {
         if (!holding()) panic("spinlock::release::not_held");
-        __atomic_store_n(&m_holder, -1, __ATOMIC_RELAXED);
+        m_holder.store(no_holder, std::memory_order_relaxed);
         // The release store makes everything written in the critical section visible to the next
-        // holder before the lock reads as free; on RISC-V it is a `fence rw,w` and a plain store.
-        __atomic_store_n(&m_locked, lock_status::unlocked, __ATOMIC_RELEASE);
+        // holder before the lock reads as free; on RISC-V it is a full `fence` and a plain store.
+        m_locked.clear(std::memory_order_release);
         cpu::pop_intr_off();
     }
 
     bool spinlock::holding() const {
         // If another hart holds the lock, m_holder is that hart's id and never ours.
-        return (__atomic_load_n(&m_locked, __ATOMIC_RELAXED) == lock_status::locked) && (__atomic_load_n(&m_holder, __ATOMIC_RELAXED) == riscv::tp);
+        return m_locked.test(std::memory_order_relaxed) && (m_holder.load(std::memory_order_relaxed) == riscv::tp);
     }
 
 } // namespace xv6

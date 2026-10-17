@@ -46,7 +46,7 @@ namespace xv6 {
                 manual,
             };
 
-            const size_t len = N - 1; // the terminating null is not part of the format
+            constexpr size_t len = N - 1; // the terminating null is not part of the format
 
             // the literal token that is currently being built; invariant: open => lit_end == i
             bool open        = false;

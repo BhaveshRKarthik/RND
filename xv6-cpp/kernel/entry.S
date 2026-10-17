@@ -11,11 +11,11 @@ _entry:
         # set up a stack for C++.
 
         # kernel_stack_base is declared in start.cpp,
-        # with a KSTACKSIZE-byte stack per CPU.
-        # sp = (kernel_stack_base + KSTACKSIZE) + (hartid  * KSTACKSIZE)
+        # with a KERNEL_STACK_SIZE-byte stack per CPU.
+        # sp = (kernel_stack_base + KERNEL_STACK_SIZE) + (hartid  * KERNEL_STACK_SIZE)
 
-        la sp, kernel_stack_base + KSTACKSIZE # top of stack for cpu0
-        li a0, KSTACKSIZE
+        la sp, kernel_stack_base + KERNEL_STACK_SIZE # top of stack for cpu0
+        li a0, KERNEL_STACK_SIZE
         csrr a1, mhartid
         mul a0, a0, a1
         add sp, sp, a0

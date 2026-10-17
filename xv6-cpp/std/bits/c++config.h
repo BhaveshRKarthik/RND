@@ -1406,7 +1406,7 @@ namespace __gnu_cxx
 #define _GLIBCXX_HAVE_VWSCANF 1
 
 /* Define to 1 if you have the <wchar.h> header file. */
-#define _GLIBCXX_HAVE_WCHAR_H 1
+#define _GLIBCXX_HAVE_WCHAR_H 0
 
 /* Defined if wcstof exists. */
 #define _GLIBCXX_HAVE_WCSTOF 1
@@ -1682,7 +1682,7 @@ namespace __gnu_cxx
 
 /* Define if C99 functions or macros in <wchar.h> should be imported in
    <cwchar> in namespace std for C++11. */
-#define _GLIBCXX11_USE_C99_WCHAR 1
+// #define _GLIBCXX11_USE_C99_WCHAR 1
 
 /* Define if C99 functions in <complex.h> should be used in <complex> for
    C++98. Using compiler builtins for these functions requires corresponding
@@ -1703,7 +1703,7 @@ namespace __gnu_cxx
 
 /* Define if C99 functions or macros in <wchar.h> should be imported in
    <cwchar> in namespace std for C++98. */
-#define _GLIBCXX98_USE_C99_WCHAR 1
+// #define _GLIBCXX98_USE_C99_WCHAR 1
 
 /* Define if the compiler supports C++11 atomics. */
 #define _GLIBCXX_ATOMIC_BUILTINS 1
@@ -1802,7 +1802,7 @@ namespace __gnu_cxx
 
 /* Define if wchar_t C99 functions in <inttypes.h> should be imported in
    <tr1/cinttypes> in namespace std::tr1. */
-#define _GLIBCXX_USE_C99_INTTYPES_WCHAR_T_TR1 1
+// #define _GLIBCXX_USE_C99_INTTYPES_WCHAR_T_TR1 1
 
 /* Define if C99 functions or macros in <math.h> should be imported in
    <tr1/cmath> in namespace std::tr1. */
@@ -1938,7 +1938,7 @@ namespace __gnu_cxx
 #define _GLIBCXX_USE_UTIMENSAT 1
 
 /* Define if code specialized for wchar_t should be used. */
-#define _GLIBCXX_USE_WCHAR_T 1
+// #define _GLIBCXX_USE_WCHAR_T 1
 
 /* Defined if Sleep exists. */
 /* #undef _GLIBCXX_USE_WIN32_SLEEP */
